@@ -1,7 +1,7 @@
 import { apiInitializer } from "discourse/lib/api";
 
 function stringToHex(str) {
-  return [...str].map(char => char.charCodeAt(0).toString(16).padStart(2, '0')).join('');
+    return [...str].map(char => char.charCodeAt(0).toString(16).padStart(2, '0')).join('');
 }
 
 // Hàm lấy tên gói và giá
@@ -9,7 +9,7 @@ function extractPackageInfo(packageString) {
     // Sử dụng regex để tách tên gói và giá
     let regex = /(.+?)\s*–\s*(\d+)(K)/;
     let match = packageString.match(regex);
-    
+
     if (match) {
         // Lấy tên gói và giá với đơn vị K
         let packageName = match[1].trim();
@@ -27,7 +27,7 @@ const { username } = JSON.parse(preloadedData.currentUser || "{ }");
 
 export default apiInitializer((api) => {
     //
-    function handleAdClick({ data_title,  data_text, data_url }){
+    function handleAdClick({ data_title, data_text, data_url }) {
         Swal.fire({
             title: data_title,
             text: data_text,
@@ -49,16 +49,16 @@ export default apiInitializer((api) => {
             }
         });
     }
-    
+
     const observer = new MutationObserver((mutations) => {
-        for(const mutation of mutations){
-            for(const node of mutation.addedNodes){
-                if (node.nodeType === Node.ELEMENT_NODE){
-                    if (node.classList && node.classList.contains("ad-link")){
+        for (const mutation of mutations) {
+            for (const node of mutation.addedNodes) {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    if (node.classList && node.classList.contains("knox-plan-link")) {
                         node.onclick = ((event) => {
                             event.preventDefault(); // Ngăn không cho chuyển hướng
                             const data = node.getAttribute('data-package'); // Lấy tên gói từ data attribute
-                            if(!username){
+                            if (!username) {
                                 return document.querySelector(".login-button").click();
                             }
                             //
@@ -67,13 +67,13 @@ export default apiInitializer((api) => {
                             const data_title = data;
                             const code = stringToHex(username);
                             const data_url = `https://api.vietqr.io/image/970422-24767896789-v6xr1xZ.jpg?accountName=LE%20QUOC%20VI&amount=${price}&addInfo=NAP${code}END`;
-                            handleAdClick({ data_title,  data_text, data_url });
+                            handleAdClick({ data_title, data_text, data_url });
                         });
                     }
                 }
             }
         }
     });
-    
+
     observer.observe(document.body, { childList: true, subtree: true });
 });
